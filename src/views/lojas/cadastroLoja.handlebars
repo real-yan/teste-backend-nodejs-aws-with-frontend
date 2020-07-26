@@ -1,0 +1,66 @@
+{{#each erros}}
+    <div class="alert alert-danger">{{texto}}</div>
+{{else}}
+
+{{/each}}
+<h3>Nova Loja: </h3>
+<div class="card">
+    <div class="card-body">
+        <form class="form-group" action="/cadastrarloja/salvar" method="post">
+            <div class="input-group">
+                <label for="nome">Nome: </label>
+                <input type="text" name="nome" class="form-control ml-2">
+
+                <label for="matriz"  class="ml-4">Matriz: </label>
+                <input type="checkbox" name="matriz" placeholder="Matriz" class="mt-2 ml-2 mr-5">
+            </div>
+            <div class="input-group mt-4">
+                <label for="cnpj">CNPJ: </label>
+                <input type="text" name="cnpj" class="form-control ml-3">
+
+                <label for="inscrestadual" class="ml-4">Inscrição Estadual: </label>
+                <input type="text" name="inscrestadual" class="form-control ml-2">
+
+                <label for="inscrmunicipal" class="ml-4">Inscrição Municipal: </label>
+                <input type="text" name="inscrmunicipal" class="form-control ml-2">
+            </div>
+            <div class="input-group mt-4">
+                <label for="rua">Rua: </label>
+                <input type="text" name="rua" class="form-control ml-4">
+
+                <label for="numero" class="ml-4">Número: </label>
+                <input type="text" name="numero" class="form-control ml-2 col-lg-1">
+
+                <label for="complemento" class="ml-4">Complemento: </label>
+                <input type="text" name="complemento" class="form-control ml-2">
+            </div>
+            <div class="input-group mt-4">
+                <label for="bairro">Bairro: </label>
+                <input type="text" name="bairro" class="form-control ml-2">
+
+                <label for="cidade" class="ml-4">Cidade: </label>
+                <input type="text" name="cidade" class="form-control ml-2">
+
+                <label for="uf" class="ml-4">UF: </label>
+                <input type="text" name="uf" class="form-control ml-2 col-lg-1">
+            </div>
+            <div class="input-group mt-4">
+                <label for="responsavel">Responsavel: </label>
+                <input type="text" name="responsavel" class="form-control ml-2">
+
+                <label for="telefone" class="ml-4">Telefone: </label>
+                <input type="text" name="telefone" class="form-control ml-2">
+
+                <label for="email" class="ml-4">E-mail: </label>
+                <input type="text" name="email" class="form-control ml-2">
+            </div>
+            <div class="input-group mt-4">
+                <label for="obs">Observação: </label>
+                <textarea name="obs" class="form-control ml-2"></textarea>
+            </div>
+            <div class=" mt-4 col text-center">
+                <button type="submit" name="buttonPreencher" class="btn btn-primary">Cadastrar</button>
+            </div>
+        </form>
+    </div>
+</div>
