@@ -1,6 +1,11 @@
 const ProdutoService = require('../services/ProdutoService')
 const ProdutoServiceInstance = new ProdutoService()
 
+/**
+ * @description Redireciona para a interface de listagem de todos os produtos de uma loja
+ * @param req {express.Request} Objeto de requisição
+ * @param res {express.Response} Objeto de resposta
+ */
 const listarProdutosDaLoja = (req, res) => {
     ProdutoServiceInstance.findAllByForeignId(req.params.lojaid).then((produtos) => {
         res.render("produtos/listagemProdutos", {produtos: JSON.parse(produtos), lojaid: req.params.lojaid});    
@@ -10,10 +15,20 @@ const listarProdutosDaLoja = (req, res) => {
     });
 }
 
+/**
+ * @description Redireciona para a interface de cadastro de um novo produto
+ * @param req {express.Request} Objeto de requisição
+ * @param res {express.Response} Objeto de resposta
+ */
 const cadastrarProduto = (req, res) => {
     res.render("produtos/cadastroProduto", {lojaid: req.params.lojaid});
 }
 
+/**
+ * @description Persiste o novo produto no banco
+ * @param req {express.Request} Objeto de requisição
+ * @param res {express.Response} Objeto de resposta
+ */
 const salvarProdutoCadastrado = (req, res) => {
     var erros = validaCampos(req)
 
@@ -37,6 +52,11 @@ const salvarProdutoCadastrado = (req, res) => {
     }
 }
 
+/**
+ * @description Redireciona para a interface de alteração do cadastro de um produto
+ * @param req {express.Request} Objeto de requisição
+ * @param res {express.Response} Objeto de resposta
+ */
 const alterarProduto = (req, res) => {
     ProdutoServiceInstance.findById(req.params.id).then((produto) => {
         res.render("produtos/alteracaoProduto", {produto: JSON.parse(produto), lojaid: req.params.lojaid});    
@@ -46,6 +66,11 @@ const alterarProduto = (req, res) => {
     });
 }
 
+/**
+ * @description Persiste o produto alterado ao banco de dados
+ * @param req {express.Request} Objeto de requisição
+ * @param res {express.Response} Objeto de resposta
+ */
 const salvarProdutoALterado = (req, res) => {
     var erros = validaCampos(req)
     
@@ -69,6 +94,11 @@ const salvarProdutoALterado = (req, res) => {
     }
 }
 
+/**
+ * @description Remove o cadastro de um produto
+ * @param req {express.Request} Objeto de requisição
+ * @param res {express.Response} Objeto de resposta
+ */
 const removerProduto = (req, res) => {
     console.log(req.body.id)
     ProdutoServiceInstance.delete(req.body.id).then(() => {
@@ -80,6 +110,10 @@ const removerProduto = (req, res) => {
     });
 }
 
+/**
+ * @description Valida o preenchimento dos campos obrigatórios do cadastro
+ * @param req {express.Request} Objeto de requisição
+ */
 const validaCampos = (req) => {
     var erros = []
 

@@ -8,7 +8,7 @@ class LojaService {
     constructor() {}
 
     /**
-     * @description Criar um novo registro de Loja
+     * @description Criar um novo registro de Loja via API Gateway
      * @param body {object} Objeto com as informações do registro
      * @returns {Promise} Retorna o resultado da operação
      */
@@ -22,7 +22,7 @@ class LojaService {
     }
 
     /**
-     * @description Retornar todos os registros de Loja
+     * @description Retornar todos os registros de Loja via API Gateway
      * @returns {Promise} Retorna o resultado da operação
      */
     findAll() {
@@ -33,7 +33,7 @@ class LojaService {
     }
 
     /**
-     * @description Retornar um registro de Loja pelo seu ID
+     * @description Retornar um registro de Loja pelo seu ID via API Gateway
      * @param id {integer} ID do registro a ser retornado
      * @returns {Promise} Retorna o resultado da operação
      */
@@ -45,7 +45,7 @@ class LojaService {
     }
 
     /**
-     * @description Atualiza um registro de Loja
+     * @description Atualiza um registro de Loja via API Gateway
      * @param id {integer} ID do registro a ser atualizado
      * @param body {object} Objeto com as novas informações do registro
      * @returns {Promise} Retorna o resultado da operação
@@ -60,7 +60,7 @@ class LojaService {
     }
 
     /**
-     * @description Remove um registr de Loja
+     * @description Remove um registr de Loja via API Gateway
      * @param id {integer} ID do registro a ser removido
      * @returns {Promise} Retorna o resultado da operação
      */

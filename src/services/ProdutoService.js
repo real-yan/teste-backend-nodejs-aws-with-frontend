@@ -8,7 +8,7 @@ class ProdutoService {
     constructor() {}
 
     /**
-     * @description Criar um novo registro de Produto
+     * @description Criar um novo registro de Produto via API Gateway
      * @param body {object} Objeto com as informações do registro
      * @returns {Promise} Retorna o resultado da operação
      */
@@ -22,11 +22,12 @@ class ProdutoService {
     }
 
     /**
-     * @description Retornar todos os registros de Produto a partir de condições
+     * @description Retornar todos os registros de Produto a partir de condições via API Gateway
      * @param condition {object} Condições nas quais os registros retornados se enquadrarão
      * @returns {Promise} Retorna o resultado da operação
      */
     findAllByForeignId(foreignId) {
+        console.log(foreignId)
         return request({
             url: settings.API.HOST +'/produtos/'+ foreignId,
             method: 'GET'
@@ -34,7 +35,7 @@ class ProdutoService {
     }
 
     /**
-     * @description Retornar um registro de Produto pelo seu ID
+     * @description Retornar um registro de Produto pelo seu ID via API Gateway
      * @param id {integer} ID do registro a ser retornado
      * @returns {Promise} Retorna o resultado da operação
      */
@@ -46,7 +47,7 @@ class ProdutoService {
     }
 
     /**
-     * @description Atualiza um registro de Produto
+     * @description Atualiza um registro de Produto via API Gateway
      * @param id {integer} ID do registro a ser atualizado
      * @param body {object} Objeto com as novas informações do registro
      * @returns {Promise} Retorna o resultado da operação
@@ -61,7 +62,7 @@ class ProdutoService {
     }
 
     /**
-     * @description Remove um registr de Produto
+     * @description Remove um registr de Produto via API Gateway
      * @param id {integer} ID do registro a ser removido
      * @returns {Promise} Retorna o resultado da operação
      */

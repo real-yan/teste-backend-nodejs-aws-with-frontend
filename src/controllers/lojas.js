@@ -1,6 +1,11 @@
 const LojaService = require('../services/LojaService')
 const LojaServiceInstance = new LojaService()
 
+/**
+ * @description Redireciona para a interface de listagem de todas as lojas
+ * @param req {express.Request} Objeto de requisição
+ * @param res {express.Response} Objeto de resposta
+ */
 const listarTodasLojas = (req, res) => {
     LojaServiceInstance.findAll().then((lojas) => {
         res.render("lojas/listagemLojas", {lojas: JSON.parse(lojas)});    
@@ -10,10 +15,20 @@ const listarTodasLojas = (req, res) => {
     });
 }
 
+/**
+ * @description Redireciona para a interface de cadastro de uma nova loja
+ * @param req {express.Request} Objeto de requisição
+ * @param res {express.Response} Objeto de resposta
+ */
 const cadastrarNovaLoja = (req, res) => {
     res.render("lojas/cadastroLoja");
 }
 
+/**
+ * @description Persiste a nova loja no banco
+ * @param req {express.Request} Objeto de requisição
+ * @param res {express.Response} Objeto de resposta
+ */
 const salvarLojaCadastrada = (req, res) => {
     var erros = validaCampos(req)
 
@@ -42,6 +57,11 @@ const salvarLojaCadastrada = (req, res) => {
     }
 }
 
+/**
+ * @description Redireciona para a interface de alteração do cadastro de uma loja
+ * @param req {express.Request} Objeto de requisição
+ * @param res {express.Response} Objeto de resposta
+ */
 const alterarLojaCadastrada = (req, res) => {
     LojaServiceInstance.findById(req.params.id).then((loja) => {
         res.render("lojas/alteracaoLoja", {loja: JSON.parse(loja)});    
@@ -51,6 +71,11 @@ const alterarLojaCadastrada = (req, res) => {
     });
 }
 
+/**
+ * @description Persiste a loja alterada ao banco de dados
+ * @param req {express.Request} Objeto de requisição
+ * @param res {express.Response} Objeto de resposta
+ */
 const salvarLojaAlterada = (req, res) => {
     var erros = validaCampos(req)
 
@@ -79,6 +104,11 @@ const salvarLojaAlterada = (req, res) => {
     }
 }
 
+/**
+ * @description Remove o cadastro de uma loja
+ * @param req {express.Request} Objeto de requisição
+ * @param res {express.Response} Objeto de resposta
+ */
 const removerLojaCadastrada = (req, res) => {
     LojaServiceInstance.delete(req.body.id).then(() => {
         res.status(200).send()
@@ -91,6 +121,10 @@ const removerLojaCadastrada = (req, res) => {
     });
 }
 
+/**
+ * @description Valida o preenchimento dos campos obrigatórios do cadastro
+ * @param req {express.Request} Objeto de requisição
+ */
 const validaCampos = (req) => {
     var erros = []
 
@@ -141,6 +175,10 @@ const validaCampos = (req) => {
     return erros
 }
 
+/**
+ * @description Valida se o preenchimento do CNPJ da loja está correto
+ * @param cnpj {string} CNPJ da loja
+ */
 const validarCNPJ = (cnpj) => {
     cnpj = cnpj.replace(/[^\d]+/g,'');
  
