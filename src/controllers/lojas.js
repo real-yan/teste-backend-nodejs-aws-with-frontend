@@ -48,10 +48,10 @@ const salvarLojaCadastrada = (req, res) => {
             email: req.body.email,
             responsavel: req.body.responsavel
         }).then(() => {
-            req.flash("success_msg", "Loja " + req.body.nome + " cadastrada com sucesso.");
+            req.flash("success_msg", req.body.nome + " cadastrado com sucesso.");
             res.redirect("/listarlojas");   
         }).catch((e) => {
-            req.flash("error_msg", "Não foi possível cadastrar a loja " + req.body.nome + ".");
+            req.flash("error_msg", "Não foi possível cadastrar " + req.body.nome + ".");
             res.redirect("/listarlojas");
         });
     }

@@ -64,7 +64,7 @@ const criaNovaLoja = (req, res) => {
  * @param res {express.Response} Objeto de resposta
  */
 const atualizaLoja = (req, res) => {
-    LojaServiceInstance.update(req.body.id, {
+    LojaServiceInstance.update(req.params.id, {
         nome: req.body.nome,
         cnpj: req.body.cnpj,
         rua: req.body.rua,
