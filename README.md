@@ -1,5 +1,5 @@
-# Teste de backend utilizando Nodejs com o objetivo de renderizar uma interface para consumir a API REST Serverless hospedada no AWS
-O intuito desta aplicação é elaborar uma interface para consumir, de forma prática, uma API Serverless hospedada no AWS através dos serviços API Gateway, AWS Lambda Functions e Amazon RDS. Para desenvolver a aplicação foi utilizado o serviço Express em conjunto com o Handlebars, para facilitar a elaboração da interface visual, o Swagger, para elaborar a documentação da API, e o Request, para consumir a API mencionada.
+# Aplicação Nodejs com o objetivo de renderizar uma interface web para consumir uma API REST Serverless hospedada no AWS
+O intuito desta aplicação é elaborar uma interface para consumir, de forma prática, uma API Serverless hospedada no AWS através dos serviços API Gateway, AWS Lambda Functions e Amazon RDS. Para desenvolver a aplicação foi utilizado o framework Express em conjunto com o Handlebars, para facilitar a elaboração da interface visual, o Swagger, para elaborar a documentação da API, e o Request, para consumir a API em questão.
 
 O projeto em si constitui-se por uma aplicação web para o cadastro, alteração e remoção de lojas e produtos de uma determinada empresa.
 
