@@ -1,5 +1,5 @@
 const swaggerJSDoc = require('swagger-jsdoc')
-const settings = require('./settings')
+const settings = require('../settings')
 
 /**
  * Configura documentação via Swagger
@@ -17,7 +17,7 @@ const swaggerDocs = swaggerJSDoc({
             servers: ["https://"+ settings.ENV.HOST +":"+ settings.ENV.PORT]
         }
     },
-    apis: ["./routes/lojas.js", "./routes/produtos.js"]
+    apis: ["./routes/swagger/lojas.js", "./routes/swagger/produtos.js"]
 })
 
 module.exports = swaggerDocs

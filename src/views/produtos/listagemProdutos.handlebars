@@ -1,33 +1,27 @@
-<h2>Lojas: </h2>
-<a href="/cadastrarloja">
+<h2>Produtos: </h2>
+<a href="/cadastrarproduto/{{lojaid}}">
     <button type="button" name="button" class="btn btn-primary">Cadastrar</button>
 </a>
 <br><br>
-{{#each lojas}}
+{{#each produtos}}
     <div class="row">
         <div class="col-sm-7">
             <div class="card mb-2">
                 <div class="card-body">
                     <div class="row">
                         <div class="col-sm-5 mr-4">
-                            <h5>{{nome}}</h5>
-                            <h6>{{cnpj}}</h6>
-                            <small>{{rua}}, {{numero}} {{complemento}}</small>
-                            <br><small>{{bairro}}, {{cidade}} - {{uf}}</small>
+                            <h5>{{codigo}} - {{nome}}</h5>
+                            <h6>{{classificacao}}</h6>
                         </div>
-                        <div class="col-sm-5 mt-2 ml-5">
-                            <br><small>Telefone: {{telefone}}</small>
-                            <br><small>E-mail: {{email}}</small>
-                            <br><small>Responsável: {{responsavel}}</small>
+                        <div class="col-sm-5 ml-5">
+                            <small>Quantidade: {{quantidade}}</small>
+                            <br><small>Valor: R$ {{valor}}</small>
                         </div>
                     </div>
                     <br>
-                    <form class="" action="/removerloja" method="post">
+                    <form class="" action="/removerproduto/{{lojaId}}" method="post">
                         <div class=" mt-4 col text-center">
-                        <a href="/listarprodutos/{{id}}">
-                            <button class="btn btn-primary mt-2" type="button" name="buttonProdutos">Produtos</button>
-                        </a>
-                        <a href="/alterarloja/{{id}}">
+                        <a href="/alterarproduto/{{lojaId}}/{{id}}">
                             <button class="btn btn-primary mt-2" type="button" name="buttonEdita">Editar</button>
                         </a>
                         <input type="hidden" name="id" value="{{id}}">
@@ -39,5 +33,5 @@
         </div>
     </div>
 {{else}}
-    <h4 class="mt-2">Nenhuma loja registrado</h4>
+    <h4 class="mt-2">Nenhum produto registrado</h4>
 {{/each}}

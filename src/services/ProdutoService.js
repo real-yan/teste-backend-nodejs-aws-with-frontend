@@ -1,13 +1,11 @@
-const SequelizeService = require('./SequelizeService')
-const ProdutoModel = require('../models/Produto')
+const request = require('request-promise');
+const settings = require('../settings');
 
 class ProdutoService {
     /**
      * @description Criar uma instância da classe ProdutoService
      */
-    constructor(){
-        this.DBServiceInstance = new SequelizeService(ProdutoModel)
-    }
+    constructor() {}
 
     /**
      * @description Criar um novo registro de Produto
@@ -15,7 +13,12 @@ class ProdutoService {
      * @returns {Promise} Retorna o resultado da operação
      */
     create(body) {       
-        return this.DBServiceInstance.create(body) 
+        return request({
+            uri: settings.API.HOST +'/produtos/adicionar',
+            body: body,
+            json: true,
+            method: 'POST'
+        })
     }
 
     /**
@@ -23,8 +26,11 @@ class ProdutoService {
      * @param condition {object} Condições nas quais os registros retornados se enquadrarão
      * @returns {Promise} Retorna o resultado da operação
      */
-    findAllByCondition(condition) {
-        return this.DBServiceInstance.findAll(condition)
+    findAllByForeignId(foreignId) {
+        return request({
+            url: settings.API.HOST +'/produtos/'+ foreignId,
+            method: 'GET'
+        })
     }
 
     /**
@@ -33,7 +39,10 @@ class ProdutoService {
      * @returns {Promise} Retorna o resultado da operação
      */
     findById(id) {
-        return this.DBServiceInstance.findById(id)    
+        return request({
+            url: settings.API.HOST +'/produto/'+ id,
+            method: 'GET'
+        })   
     }
 
     /**
@@ -43,7 +52,12 @@ class ProdutoService {
      * @returns {Promise} Retorna o resultado da operação
      */
     update(id, body) {
-        return this.DBServiceInstance.update(id, body)
+        return request({
+            uri: settings.API.HOST +'/produtos/alterar/'+ id,
+            body: body,
+            json: true,
+            method: 'POST'
+        })
     }
 
     /**
@@ -52,7 +66,12 @@ class ProdutoService {
      * @returns {Promise} Retorna o resultado da operação
      */
     delete(id) {
-        return this.DBServiceInstance.delete(id)     
+        return request({
+            uri: settings.API.HOST +'/produtos/remover',
+            body: {id: id},
+            json: true,
+            method: 'POST'
+        })    
     }
 } 
 

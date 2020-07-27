@@ -10,11 +10,7 @@ module.exports = {
         PORT: 3000,
         BASEPATH: '/'
     },   
-    DB: {
-        DIALECT: 'mysql',
-        HOST: 'testenodejsdb.cbjpauviwalz.us-east-1.rds.amazonaws.com',
-        NAME: 'testenodejs',
-        USERNAME: 'Administrator',
-        PASSWORD: 'CMteste2020!'
+    API: {
+        HOST: 'https://xzf0kxerf9.execute-api.us-east-1.amazonaws.com/dev'
     }
 }

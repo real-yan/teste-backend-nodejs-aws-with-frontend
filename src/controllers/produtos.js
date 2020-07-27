@@ -1,96 +1,123 @@
 const ProdutoService = require('../services/ProdutoService')
 const ProdutoServiceInstance = new ProdutoService()
 
-/**
- * @description Retorna todos os produtos de uma loja
- * @param req {express.Request} Objeto de requisição
- * @param res {express.Response} Objeto de resposta
- */
-const retornaTodosProdutosDaLoja = (req, res) => {
-    ProdutoServiceInstance.findAllByCondition({
-        lojaId: req.params.lojaid
-    }).then((result) => {
-        res.status(200).json(result)    
-    }).catch((error) => {
-        console.log(error)
-        res.status(400).send("Houve um erro ao tentar retornar os produtos do banco.")
-    })
+const listarProdutosDaLoja = (req, res) => {
+    ProdutoServiceInstance.findAllByForeignId(req.params.lojaid).then((produtos) => {
+        res.render("produtos/listagemProdutos", {produtos: JSON.parse(produtos), lojaid: req.params.lojaid});    
+    }).catch((e) => {
+        req.flash("error_msg", "Houve um erro ao listar os produtos.")
+        res.redirect("/listarprodutos/"+ req.params.lojaid);
+    });
 }
 
-/**
- * @description Retorna um produto
- * @param req {express.Request} Objeto de requisição
- * @param res {express.Response} Objeto de resposta
- */
-const retornaProduto = (req, res) => {
-    ProdutoServiceInstance.findById(req.params.id).then((result) => {
-        res.status(200).json(result)
-    }).catch((error) => {
-        console.log(error)
-        res.status(400).send("Houve um erro ao tentar retornar o produto do banco.")   
-    })
+const cadastrarProduto = (req, res) => {
+    res.render("produtos/cadastroProduto", {lojaid: req.params.lojaid});
 }
 
-/**
- * @description Cria um novo produto
- * @param req {express.Request} Objeto de requisição
- * @param res {express.Response} Objeto de resposta
- */
-const criaNovoProduto = (req, res) => {
-    ProdutoServiceInstance.create({
-        lojaId: req.body.lojaId,
-        codigo: req.body.codigo,
-        nome: req.body.nome,
-        classificacao: req.body.classificacao,
-        quantidade: req.body.quantidade,
-        fabricacao: req.body.fabricacao,
-        validade: req.body.validade,
-        valor: req.body.valor,
-        obs: req.body.obs
-    }).then((result) => {
-        res.status(201).send("Produto salvo com sucesso.")
-    }).catch((error) => {
-        console.log(error)
-        res.status(400).send("Houve um erro ao tentar salvar o produto no banco.")
-    })
+const salvarProdutoCadastrado = (req, res) => {
+    var erros = validaCampos(req)
+
+    if(erros.length > 0) {
+        res.render("produtos/cadastroProduto", {erros: erros, lojaid: req.body.lojaid});
+    } else {
+        ProdutoServiceInstance.create({
+            lojaId: req.body.lojaid,
+            codigo: req.body.codigo,
+            nome: req.body.nome,
+            classificacao: req.body.classificacao,
+            quantidade: req.body.quantidade,
+            valor: req.body.valor
+        }).then(() => {
+            req.flash("success_msg", "Produto " + req.body.nome + " cadastrado com sucesso.");
+            res.redirect("/listarprodutos/"+ req.body.lojaid);   
+        }).catch((e) => {
+            req.flash("error_msg", "Não foi possível cadastrar o produto " + req.body.nome + ".");
+            res.redirect("/listarprodutos/"+ req.body.lojaid);
+        });
+    }
 }
 
-/**
- * @description Atualiza um produto existente
- * @param req {express.Request} Objeto de requisição
- * @param res {express.Response} Objeto de resposta
- */
-const atualizaProduto = (req, res) => {
-    ProdutoServiceInstance.update(req.body.id, {
-        lojaId: req.body.lojaId,
-        codigo: req.body.codigo,
-        nome: req.body.nome,
-        classificacao: req.body.classificacao,
-        quantidade: req.body.quantidade,
-        fabricacao: req.body.fabricacao,
-        validade: req.body.validade,
-        valor: req.body.valor,
-        obs: req.body.obs
-    }).then((result) => {
-        res.status(200).send("Produto alterado com sucesso com sucesso.")
-    }).catch((error) => {
-        console.log(error)
-        res.status(400).send("Houve um erro ao tentar alterar o produto no banco.")
-    })
+const alterarProduto = (req, res) => {
+    ProdutoServiceInstance.findById(req.params.id).then((produto) => {
+        res.render("produtos/alteracaoProduto", {produto: JSON.parse(produto), lojaid: req.params.lojaid});    
+    }).catch((e) => {
+        req.flash("error_msg", "Este produto não foi encontrado.");
+        res.redirect("/listarprodutos/"+ req.params.lojaid);
+    });
 }
 
-/**
- * @description Remove um produto
- * @param req {express.Request} Objeto de requisição
- * @param res {express.Response} Objeto de resposta
- */
-const removeProduto = (req, res) => {
+const salvarProdutoALterado = (req, res) => {
+    var erros = validaCampos(req)
+    
+    if(erros.length > 0) {
+        res.render("produto/alteracaoProduto", {erros: erros, lojaid: req.body.lojaid, produto: req.body});
+    } else {
+        ProdutoServiceInstance.update(req.params.id, {
+            lojaId: req.body.lojaid,
+            codigo: req.body.codigo,
+            nome: req.body.nome,
+            classificacao: req.body.classificacao,
+            quantidade: req.body.quantidade,
+            valor: req.body.valor
+        }).then(() => {
+            req.flash("success_msg", "Produto " + req.body.nome + " alterado com sucesso."); 
+            res.redirect("/listarprodutos/"+ req.body.lojaid);  
+        }).catch((e) => {
+            req.flash("error_msg", "Não foi possível alterar o produto " + req.body.nome + ".");
+            res.redirect("/listarprodutos/"+ req.body.lojaid);
+        });
+    }
+}
+
+const removerProduto = (req, res) => {
+    console.log(req.body.id)
     ProdutoServiceInstance.delete(req.body.id).then(() => {
-        res.status(200).send("Produto removido com sucesso.")
-    }).catch((error) => {
-        console.log(error)
-        res.status(400).send("Houve um erro ao tentar remover o produto do banco.")
-    })
+        req.flash("success_msg", "Produto removido com sucesso.");
+        res.redirect("/listarprodutos/"+ req.params.lojaid);   
+    }).catch((e) => {
+        req.flash("error_msg", "Não foi possível remover o produto.");
+        res.redirect("/listarprodutos/"+ req.params.lojaid);
+    });
 }
 
-module.exports = {retornaTodosProdutosDaLoja, retornaProduto, criaNovoProduto, atualizaProduto, removeProduto}
+const validaCampos = (req) => {
+    var erros = []
+
+    if(!req.body.codigo
+        || typeof req.body.codigo == undefined
+        || req.body.codigo == null
+        || isNaN(req.body.codigo)) {
+        erros.push({texto: "Código inválido"})
+    }
+
+    if(!req.body.nome
+        || typeof req.body.nome == undefined
+        || req.body.nome == null) {
+        erros.push({texto: "Nome inválido"})
+    }
+
+    if(!req.body.classificacao
+        || typeof req.body.classificacao == undefined
+        || req.body.classificacao == null) {
+        erros.push({texto: "Classificação inválida"})
+    }
+
+    if(!req.body.quantidade
+        || typeof req.body.quantidade == undefined
+        || req.body.quantidade == null
+        || isNaN(req.body.quantidade)) {
+        erros.push({texto: "Quantidade inválido"})
+    }
+
+    if(!req.body.valor
+        || typeof req.body.valor == undefined
+        || req.body.valor == null
+        || isNaN(req.body.quantidade)) {
+        erros.push({texto: "Valor inválido"})
+    }
+
+    return erros
+}
+
+module.exports = {listarProdutosDaLoja, cadastrarProduto, salvarProdutoCadastrado, 
+    alterarProduto, salvarProdutoALterado, removerProduto}

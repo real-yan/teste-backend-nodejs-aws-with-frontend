@@ -1,106 +1,197 @@
 const LojaService = require('../services/LojaService')
 const LojaServiceInstance = new LojaService()
 
-/**
- * @description Retorna todas as lojas
- * @param req {express.Request} Objeto de requisição
- * @param res {express.Response} Objeto de resposta
- */
-const retornaTodasLojas = (req, res) => {
-    LojaServiceInstance.findAll().then((result) => {
-        res.status(200).json(result)   
-    }).catch((error) => {
-        console.log(error)
-        res.status(400).send("Houve um erro ao tentar retornar as lojas do banco.")
-    })
+const listarTodasLojas = (req, res) => {
+    LojaServiceInstance.findAll().then((lojas) => {
+        res.render("lojas/listagemLojas", {lojas: JSON.parse(lojas)});    
+    }).catch((e) => {
+        req.flash("error_msg", "Houve um erro ao listar as lojas.")
+        res.redirect("/listarlojas");
+    });
 }
 
-/**
- * @description Retorna uma loja
- * @param req {express.Request} Objeto de requisição
- * @param res {express.Response} Objeto de resposta
- */
-const retornaLoja = (req, res) => {
-    LojaServiceInstance.findById(req.params.id).then((result) => {
-        res.status(200).json(result)
-    }).catch((error) => {
-        console.log(error) 
-        res.status(400).send("Houve um erro ao tentar retornar a loja do banco.")  
-    })
+const cadastrarNovaLoja = (req, res) => {
+    res.render("lojas/cadastroLoja");
 }
 
-/**
- * @description Cria uma nova loja
- * @param req {express.Request} Objeto de requisição
- * @param res {express.Response} Objeto de resposta
- */
-const criaNovaLoja = (req, res) => {
-    LojaServiceInstance.create({
-        nome: req.body.nome,
-        matriz: req.body.matriz,
-        cnpj: req.body.cnpj,
-        inscrestadual: req.body.inscrestadual,
-        inscrmunicipal: req.body.inscrmunicipal,
-        rua: req.body.rua,
-        numero: req.body.numero,
-        bairro: req.body.bairro,
-        complemento: req.body.complemento,
-        cidade: req.body.cidade,
-        uf: req.body.uf,
-        telefone: req.body.telefone,
-        email: req.body.email,
-        responsavel: req.body.responsavel,
-        obs: req.body.obs
-    }).then((result) => {
-        res.status(201).send("Loja salva com sucesso.")
-    }).catch((error) => {
-        console.log(error)
-        res.status(400).send("Houve um erro ao tentar salvar a loja no banco.")
-    })
+const salvarLojaCadastrada = (req, res) => {
+    var erros = validaCampos(req)
+
+    if(erros.length > 0) {
+        res.render("lojas/cadastroLoja", {erros: erros});
+    } else {
+        LojaServiceInstance.create({
+            nome: req.body.nome,
+            cnpj: req.body.cnpj,
+            rua: req.body.rua,
+            numero: req.body.numero,
+            bairro: req.body.bairro,
+            complemento: req.body.complemento,
+            cidade: req.body.cidade,
+            uf: req.body.uf,
+            telefone: req.body.telefone,
+            email: req.body.email,
+            responsavel: req.body.responsavel
+        }).then(() => {
+            req.flash("success_msg", "Loja " + req.body.nome + " cadastrada com sucesso.");
+            res.redirect("/listarlojas");   
+        }).catch((e) => {
+            req.flash("error_msg", "Não foi possível cadastrar a loja " + req.body.nome + ".");
+            res.redirect("/listarlojas");
+        });
+    }
 }
 
-/**
- * @description Atualiza uma loja existente
- * @param req {express.Request} Objeto de requisição
- * @param res {express.Response} Objeto de resposta
- */
-const atualizaLoja = (req, res) => {
-    LojaServiceInstance.update(req.body.id, {
-        nome: req.body.nome,
-        matriz: req.body.matriz,
-        cnpj: req.body.cnpj,
-        inscrestadual: req.body.inscrestadual,
-        inscrmunicipal: req.body.inscrmunicipal,
-        rua: req.body.rua,
-        numero: req.body.numero,
-        bairro: req.body.bairro,
-        complemento: req.body.complemento,
-        cidade: req.body.cidade,
-        uf: req.body.uf,
-        telefone: req.body.telefone,
-        email: req.body.email,
-        responsavel: req.body.responsavel,
-        obs: req.body.obs
-    }).then((result) => {
-        res.status(200).send("Loja alterada com sucesso com sucesso.")
-    }).catch((error) => {
-        console.log(error)
-        res.status(400).send("Houve um erro ao tentar alterar a loja no banco.")
-    })
+const alterarLojaCadastrada = (req, res) => {
+    LojaServiceInstance.findById(req.params.id).then((loja) => {
+        res.render("lojas/alteracaoLoja", {loja: JSON.parse(loja)});    
+    }).catch((e) => {
+        req.flash("error_msg", "Esta loja não foi encontrada.");
+        res.redirect("/listarlojas");
+    });
 }
 
-/**
- * @description Remove uma loja
- * @param req {express.Request} Objeto de requisição
- * @param res {express.Response} Objeto de resposta
- */
-const removeLoja = (req, res) => {
+const salvarLojaAlterada = (req, res) => {
+    var erros = validaCampos(req)
+
+    if(erros.length > 0) {
+        res.render("lojas/alteracaoLoja", {erros: erros, loja: req.body});
+    } else {
+        LojaServiceInstance.update(req.params.id, {
+            nome: req.body.nome,
+            cnpj: req.body.cnpj,
+            rua: req.body.rua,
+            numero: req.body.numero,
+            bairro: req.body.bairro,
+            complemento: req.body.complemento,
+            cidade: req.body.cidade,
+            uf: req.body.uf,
+            telefone: req.body.telefone,
+            email: req.body.email,
+            responsavel: req.body.responsavel
+        }).then(() => {
+            req.flash("success_msg", req.body.nome +" alterado com sucesso."); 
+            res.redirect("/listarlojas");  
+        }).catch((e) => {
+            req.flash("error_msg", "Não foi possível alterar " + req.body.nome + ".");
+            res.redirect("/listarlojas");
+        });
+    }
+}
+
+const removerLojaCadastrada = (req, res) => {
     LojaServiceInstance.delete(req.body.id).then(() => {
-        res.status(200).send("Loja removida com sucesso.")
-    }).catch((error) => {
-        console.log(error)
-        res.status(400).send("Houve um erro ao tentar remover a loja do banco.")
-    })
+        res.status(200).send()
+    }).then(() => {
+        req.flash("success_msg", "Loja removida com sucesso.");
+        res.redirect("/listarlojas");   
+    }).catch((e) => {
+        req.flash("error_msg", "Não foi possível remover a loja.");
+        res.redirect("/listarlojas");
+    });
 }
 
-module.exports = {retornaTodasLojas, retornaLoja, criaNovaLoja, atualizaLoja, removeLoja}
+const validaCampos = (req) => {
+    var erros = []
+
+    if(!req.body.nome
+        || typeof req.body.nome == undefined
+        || req.body.nome == null) {
+        erros.push({texto: "Nome inválido"})
+    }
+
+    if(!req.body.cnpj
+        || typeof req.body.cnpj == undefined
+        || req.body.cnpj == null
+        || !validarCNPJ(req.body.cnpj)) {
+        erros.push({texto: "CNPJ inválido"})
+    }
+
+    if(!req.body.rua
+        || typeof req.body.rua == undefined
+        || req.body.rua == null) {
+        erros.push({texto: "Rua inválida"})
+    }
+
+    if(!req.body.numero
+        || typeof req.body.numero == undefined
+        || req.body.numero == null
+        || isNaN(req.body.numero)) {
+        erros.push({texto: "Número inválido"})
+    }
+
+    if(!req.body.bairro
+        || typeof req.body.bairro == undefined
+        || req.body.bairro == null) {
+        erros.push({texto: "Bairro inválido"})
+    }
+
+    if(!req.body.cidade
+        || typeof req.body.cidade == undefined
+        || req.body.cidade == null) {
+        erros.push({texto: "Cidade inválida"})
+    }
+
+    if(!req.body.uf
+        || typeof req.body.uf == undefined
+        || req.body.uf == null) {
+        erros.push({texto: "UF inválida"})
+    }
+
+    return erros
+}
+
+const validarCNPJ = (cnpj) => {
+    cnpj = cnpj.replace(/[^\d]+/g,'');
+ 
+    if(cnpj == '') return false;
+     
+    if (cnpj.length != 14)
+        return false;
+ 
+    // Elimina CNPJs invalidos conhecidos
+    if (cnpj == "00000000000000" || 
+        cnpj == "11111111111111" || 
+        cnpj == "22222222222222" || 
+        cnpj == "33333333333333" || 
+        cnpj == "44444444444444" || 
+        cnpj == "55555555555555" || 
+        cnpj == "66666666666666" || 
+        cnpj == "77777777777777" || 
+        cnpj == "88888888888888" || 
+        cnpj == "99999999999999")
+        return false;
+         
+    // Valida DVs
+    tamanho = cnpj.length - 2
+    numeros = cnpj.substring(0,tamanho);
+    digitos = cnpj.substring(tamanho);
+    soma = 0;
+    pos = tamanho - 7;
+    for (i = tamanho; i >= 1; i--) {
+      soma += numeros.charAt(tamanho - i) * pos--;
+      if (pos < 2)
+            pos = 9;
+    }
+    resultado = soma % 11 < 2 ? 0 : 11 - soma % 11;
+    if (resultado != digitos.charAt(0))
+        return false;
+         
+    tamanho = tamanho + 1;
+    numeros = cnpj.substring(0,tamanho);
+    soma = 0;
+    pos = tamanho - 7;
+    for (i = tamanho; i >= 1; i--) {
+      soma += numeros.charAt(tamanho - i) * pos--;
+      if (pos < 2)
+            pos = 9;
+    }
+    resultado = soma % 11 < 2 ? 0 : 11 - soma % 11;
+    if (resultado != digitos.charAt(1))
+          return false;
+           
+    return true; 
+}
+
+module.exports = {listarTodasLojas, cadastrarNovaLoja, salvarLojaCadastrada, 
+    alterarLojaCadastrada, salvarLojaAlterada, removerLojaCadastrada}

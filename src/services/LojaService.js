@@ -1,21 +1,24 @@
-const SequelizeService = require('./SequelizeService')
-const LojaModel = require('../models/Loja')
+const request = require('request-promise');
+const settings = require('../settings');
 
 class LojaService {
     /**
      * @description Criar uma instância da classe LojaService
      */
-    constructor(){
-        this.DBServiceInstance = new SequelizeService(LojaModel)
-    }
+    constructor() {}
 
     /**
      * @description Criar um novo registro de Loja
      * @param body {object} Objeto com as informações do registro
      * @returns {Promise} Retorna o resultado da operação
      */
-    create(body) {       
-        return this.DBServiceInstance.create(body) 
+    create(body) {
+        return request({
+            uri: settings.API.HOST +'/lojas/adicionar',
+            body: body,
+            json: true,
+            method: 'POST'
+        })
     }
 
     /**
@@ -23,7 +26,10 @@ class LojaService {
      * @returns {Promise} Retorna o resultado da operação
      */
     findAll() {
-        return this.DBServiceInstance.findAll()
+        return request({
+            url: settings.API.HOST +'/lojas',
+            method: 'GET'
+        })
     }
 
     /**
@@ -31,8 +37,11 @@ class LojaService {
      * @param id {integer} ID do registro a ser retornado
      * @returns {Promise} Retorna o resultado da operação
      */
-    findById(id) {
-        return this.DBServiceInstance.findById(id)    
+    findById (id) {
+        return request({
+            url: settings.API.HOST +'/loja/'+ id,
+            method: 'GET'
+        })
     }
 
     /**
@@ -41,8 +50,13 @@ class LojaService {
      * @param body {object} Objeto com as novas informações do registro
      * @returns {Promise} Retorna o resultado da operação
      */
-    update(id, body) {
-        return this.DBServiceInstance.update(id, body)
+    update (id, body) {
+        return request({
+            uri: settings.API.HOST +'/lojas/alterar/'+ id,
+            body: body,
+            json: true,
+            method: 'POST'
+        })
     }
 
     /**
@@ -50,8 +64,13 @@ class LojaService {
      * @param id {integer} ID do registro a ser removido
      * @returns {Promise} Retorna o resultado da operação
      */
-    delete(id) {
-        return this.DBServiceInstance.delete(id)     
+    delete (id) {
+        return request({
+            uri: settings.API.HOST +'/lojas/remover/',
+            body: {id: id},
+            json: true,
+            method: 'POST'
+        })
     }
 } 
 
